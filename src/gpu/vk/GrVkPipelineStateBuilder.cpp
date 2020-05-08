@@ -247,6 +247,10 @@ GrVkPipelineState* GrVkPipelineStateBuilder::finalize(const GrProgramDesc& desc,
             }
         }
 
+        SkDebugf("****SKIA**** Sksl shaderType = Vertex, SkSL = %s\n", sksl[kVertex_GrShaderType]->c_str());
+        SkDebugf("****SKIA**** Sksl shaderType = Fragment, SkSL = %s\n", sksl[kFragment_GrShaderType]->c_str());
+
+
         bool success = this->createVkShaderModule(VK_SHADER_STAGE_VERTEX_BIT,
                                                   *sksl[kVertex_GrShaderType],
                                                   &shaderModules[kVertex_GrShaderType],
@@ -281,6 +285,7 @@ GrVkPipelineState* GrVkPipelineStateBuilder::finalize(const GrProgramDesc& desc,
                                                                         shaderModules[i], nullptr));
                 }
             }
+            SkDebugf("********SKIA********* GrVkPipelineStateBuilder::finalize, pipelineLayout = %llx\n", (unsigned long long)(pipelineLayout));
             GR_VK_CALL(fGpu->vkInterface(), DestroyPipelineLayout(fGpu->device(), pipelineLayout,
                                                                   nullptr));
             return nullptr;
@@ -312,6 +317,7 @@ GrVkPipelineState* GrVkPipelineStateBuilder::finalize(const GrProgramDesc& desc,
     }
 
     if (!pipeline) {
+        SkDebugf("********SKIA********* GrVkPipelineStateBuilder::finalize (315), pipelineLayout = %llx\n", (unsigned long long)(pipelineLayout));
         GR_VK_CALL(fGpu->vkInterface(), DestroyPipelineLayout(fGpu->device(), pipelineLayout,
                                                               nullptr));
         return nullptr;

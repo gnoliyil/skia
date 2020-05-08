@@ -611,6 +611,8 @@ GrVkPipeline* GrVkPipeline::Create(
 }
 
 void GrVkPipeline::freeGPUData() const {
+    SkDebugf("***********SKIA************* GrVkPipeline::freeGPUData: fPipeline = %llx, fPipelineLayout = %llx\n",
+             (unsigned long long)(fPipeline), (unsigned long long)(fPipelineLayout));
     GR_VK_CALL(fGpu->vkInterface(), DestroyPipeline(fGpu->device(), fPipeline, nullptr));
     GR_VK_CALL(fGpu->vkInterface(), DestroyPipelineLayout(fGpu->device(), fPipelineLayout,
                nullptr));
