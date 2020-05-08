@@ -15,18 +15,37 @@
 #include "src/gpu/GrDataUtils.h"
 #include "src/gpu/vk/GrVkInterface.h"
 #include "src/sksl/ir/SkSLProgram.h"
+#include <cstring>
+#include <cassert>
 
 class GrVkGpu;
 
 // makes a Vk call on the interface
 #define GR_VK_CALL(IFACE, X) (IFACE)->fFunctions.f##X
 
+#define GR_VK_CALL_TRAP(GPU, RESULT, X)                               \
+    do {                                                              \
+    (RESULT) = GR_VK_CALL(GPU->vkInterface(), X);                     \
+    SkASSERT(VK_SUCCESS == RESULT || VK_ERROR_DEVICE_LOST == RESULT); \
+    if (RESULT != VK_SUCCESS && !GPU->isDeviceLost()) {               \
+        SkDebugf("Failed vulkan call. Call: %s\n"                     \
+                 "                    Error: %d\n"                    \
+                 "                    File: %s : Line %d\n"           \
+                 , #X, RESULT, __FILE__, __LINE__);                   \
+        __builtin_trap();                                             \
+    }                                                                 \
+    } while(false)
+
 #define GR_VK_CALL_RESULT(GPU, RESULT, X)                             \
     do {                                                              \
     (RESULT) = GR_VK_CALL(GPU->vkInterface(), X);                     \
     SkASSERT(VK_SUCCESS == RESULT || VK_ERROR_DEVICE_LOST == RESULT); \
     if (RESULT != VK_SUCCESS && !GPU->isDeviceLost()) {               \
-        SkDebugf("Failed vulkan call. Error: %d\n", RESULT);          \
+        SkDebugf("Failed vulkan call. Call: %s\n"                     \
+                 "                    Error: %d\n"                    \
+                 "                    File: %s : Line %d\n"           \
+                 , #X, RESULT, __FILE__, __LINE__);                   \
+        __builtin_trap();                                             \
     }                                                                 \
     if (VK_ERROR_DEVICE_LOST == RESULT) {                             \
         GPU->setDeviceLost();                                         \
@@ -40,6 +59,11 @@ class GrVkGpu;
         GPU->setDeviceLost();                                         \
     }                                                                 \
     } while(false)
+
+
+#define GR_VK_CALL_ERRCHECK_TRAP(GPU, X)                             \
+    VkResult SK_MACRO_APPEND_LINE(ret);                              \
+    GR_VK_CALL_TRAP(GPU, SK_MACRO_APPEND_LINE(ret), X)               \
 
 // same as GR_VK_CALL but checks for success
 #define GR_VK_CALL_ERRCHECK(GPU, X)                                  \

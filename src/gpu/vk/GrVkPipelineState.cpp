@@ -204,6 +204,8 @@ bool GrVkPipelineState::setAndBindTextures(GrVkGpu* gpu,
 
             GR_VK_CALL(gpu->vkInterface(),
                        UpdateDescriptorSets(gpu->device(), 1, &writeInfo, 0, nullptr));
+            GR_VK_CALL_ERRCHECK_TRAP(gpu, DeviceWaitIdle(gpu->device()));
+
             commandBuffer->addResource(sampler);
             if (!fImmutableSamplers[i]) {
                 sampler->unref();

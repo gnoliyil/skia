@@ -111,6 +111,8 @@ static bool get_layout_and_desc_count(GrVkGpu* gpu,
                                                     &dsSamplerLayoutCreateInfo,
                                                     nullptr,
                                                     descSetLayout));
+        GR_VK_CALL_ERRCHECK_TRAP(gpu, DeviceWaitIdle(gpu->device()));
+
         if (result != VK_SUCCESS) {
             return false;
         }
@@ -146,6 +148,7 @@ static bool get_layout_and_desc_count(GrVkGpu* gpu,
                                                                  &uniformLayoutCreateInfo,
                                                                  nullptr,
                                                                  descSetLayout));
+        GR_VK_CALL_ERRCHECK_TRAP(gpu, DeviceWaitIdle(gpu->device()));
         if (result != VK_SUCCESS) {
             return false;
         }
@@ -328,6 +331,8 @@ bool GrVkDescriptorSetManager::DescriptorPoolManager::getNewDescriptorSet(GrVkGp
     GR_VK_CALL_RESULT(gpu, result, AllocateDescriptorSets(gpu->device(),
                                                           &dsAllocateInfo,
                                                           ds));
+    GR_VK_CALL_ERRCHECK_TRAP(gpu, DeviceWaitIdle(gpu->device()));
+
     return result == VK_SUCCESS;
 }
 
@@ -335,6 +340,7 @@ void GrVkDescriptorSetManager::DescriptorPoolManager::freeGPUResources(GrVkGpu* 
     if (fDescLayout) {
         GR_VK_CALL(gpu->vkInterface(), DestroyDescriptorSetLayout(gpu->device(), fDescLayout,
                                                                   nullptr));
+        GR_VK_CALL_ERRCHECK_TRAP(gpu, DeviceWaitIdle(gpu->device()));
         fDescLayout = VK_NULL_HANDLE;
     }
 

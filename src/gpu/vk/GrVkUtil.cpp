@@ -123,6 +123,7 @@ bool GrInstallVkShaderModule(GrVkGpu* gpu,
     VkResult err;
     GR_VK_CALL_RESULT(gpu, err, CreateShaderModule(gpu->device(), &moduleCreateInfo, nullptr,
                                                    shaderModule));
+    GR_VK_CALL_ERRCHECK_TRAP(gpu, DeviceWaitIdle(gpu->device()));
     if (err) {
         return false;
     }

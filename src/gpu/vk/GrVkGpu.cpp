@@ -373,6 +373,16 @@ bool GrVkGpu::submitCommandBuffer(SyncQueue sync) {
     fMainCmdBuffer->end(this);
     SkASSERT(fMainCmdPool);
     fMainCmdPool->close();
+
+    {
+      // wait for all commands to finish
+      VkResult res = VK_CALL(QueueWaitIdle(fQueue));
+      if (VK_SUCCESS != res) {
+        SkDebugf("****** QueueWaitIdle failed before submission [Queue = %lx]****** \n", (uint64_t)(fQueue));
+        __builtin_trap();
+        return true;
+      }
+    }
     bool didSubmit = fMainCmdBuffer->submitToQueue(this, fQueue, fSemaphoresToSignal,
                                                    fSemaphoresToWaitOn);
 
@@ -417,6 +427,16 @@ bool GrVkGpu::submitCommandBuffer(SyncQueue sync) {
     // released GrVkImage. That barrier needs to be put into a new command buffer and not the old
     // one that was just submitted.
     fResourceProvider.checkCommandBuffers();
+
+    if (didSubmit) {
+      // wait for all commands to finish
+      VkResult res = VK_CALL(QueueWaitIdle(fQueue));
+      if (VK_SUCCESS != res) {
+        SkDebugf("****** QueueWaitIdle failed after submission [Queue = %lx]****** \n", (uint64_t)(fQueue));
+        __builtin_trap();
+      }
+    }
+
     return didSubmit;
 }
 
@@ -2510,11 +2530,31 @@ GrFence SK_WARN_UNUSED_RESULT GrVkGpu::insertFence() {
     if (result != VK_SUCCESS) {
         return 0;
     }
+
+    {
+      // wait for all commands to finish
+      VkResult res = VK_CALL(QueueWaitIdle(this->queue()));
+      if (VK_SUCCESS != res) {
+        SkDebugf("****** QueueWaitIdle failed after CreateFence [Queue = %lx]****** \n", (uint64_t)(this->queue()));
+        __builtin_trap();
+      }
+    }
+
     VK_CALL_RET(result, QueueSubmit(this->queue(), 0, nullptr, fence));
     if (result != VK_SUCCESS) {
         VK_CALL(DestroyFence(this->device(), fence, nullptr));
         return 0;
     }
+
+    {
+      // wait for all commands to finish
+      VkResult res = VK_CALL(QueueWaitIdle(this->queue()));
+      if (VK_SUCCESS != res) {
+        SkDebugf("****** QueueWaitIdle failed after QueueSubmit (insertFence) [Queue = %lx]****** \n", (uint64_t)(this->queue()));
+        __builtin_trap();
+      }
+    }
+
 
     static_assert(sizeof(GrFence) >= sizeof(VkFence));
     return (GrFence)fence;

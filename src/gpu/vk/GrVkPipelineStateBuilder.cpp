@@ -183,6 +183,8 @@ GrVkPipelineState* GrVkPipelineStateBuilder::finalize(const GrProgramDesc& desc,
     VkResult result;
     GR_VK_CALL_RESULT(fGpu, result, CreatePipelineLayout(fGpu->device(), &layoutCreateInfo, nullptr,
                                                          &pipelineLayout));
+    GR_VK_CALL_ERRCHECK_TRAP(fGpu, DeviceWaitIdle(fGpu->device()));
+
     if (result != VK_SUCCESS) {
         return nullptr;
     }
@@ -283,11 +285,13 @@ GrVkPipelineState* GrVkPipelineStateBuilder::finalize(const GrProgramDesc& desc,
                 if (shaderModules[i]) {
                     GR_VK_CALL(fGpu->vkInterface(), DestroyShaderModule(fGpu->device(),
                                                                         shaderModules[i], nullptr));
+                    GR_VK_CALL_ERRCHECK_TRAP(fGpu, DeviceWaitIdle(fGpu->device()));
                 }
             }
             SkDebugf("********SKIA********* GrVkPipelineStateBuilder::finalize, pipelineLayout = %llx\n", (unsigned long long)(pipelineLayout));
             GR_VK_CALL(fGpu->vkInterface(), DestroyPipelineLayout(fGpu->device(), pipelineLayout,
                                                                   nullptr));
+            GR_VK_CALL_ERRCHECK_TRAP(fGpu, DeviceWaitIdle(fGpu->device()));
             return nullptr;
         }
 
@@ -313,6 +317,7 @@ GrVkPipelineState* GrVkPipelineStateBuilder::finalize(const GrProgramDesc& desc,
         if (shaderModules[i]) {
             GR_VK_CALL(fGpu->vkInterface(), DestroyShaderModule(fGpu->device(), shaderModules[i],
                                                                 nullptr));
+            GR_VK_CALL_ERRCHECK_TRAP(fGpu, DeviceWaitIdle(fGpu->device()));
         }
     }
 
@@ -320,6 +325,7 @@ GrVkPipelineState* GrVkPipelineStateBuilder::finalize(const GrProgramDesc& desc,
         SkDebugf("********SKIA********* GrVkPipelineStateBuilder::finalize (315), pipelineLayout = %llx\n", (unsigned long long)(pipelineLayout));
         GR_VK_CALL(fGpu->vkInterface(), DestroyPipelineLayout(fGpu->device(), pipelineLayout,
                                                               nullptr));
+        GR_VK_CALL_ERRCHECK_TRAP(fGpu, DeviceWaitIdle(fGpu->device()));
         return nullptr;
     }
 
