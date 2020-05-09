@@ -285,12 +285,13 @@ void GrVkCommandBuffer::drawIndexed(const GrVkGpu* gpu,
     SkASSERT(fIsActive);
     SkASSERT(fActiveRenderPass);
     this->addingWork(gpu);
-    GR_VK_CALL(gpu->vkInterface(), CmdDrawIndexed(fCmdBuffer,
+    /* GR_VK_CALL(gpu->vkInterface(), CmdDrawIndexed(fCmdBuffer,
                                                   indexCount,
                                                   instanceCount,
                                                   firstIndex,
                                                   vertexOffset,
                                                   firstInstance));
+                                                  */
     GR_VK_CALL_ERRCHECK_TRAP(gpu, DeviceWaitIdle(gpu->device()));
 }
 

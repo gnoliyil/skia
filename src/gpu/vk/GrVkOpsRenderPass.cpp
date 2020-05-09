@@ -539,6 +539,7 @@ void GrVkOpsRenderPass::onBindBuffers(const GrBuffer* indexBuffer, const GrBuffe
 
     GrVkCommandBuffer* currCmdBuf = this->currentCommandBuffer();
     SkASSERT(currCmdBuf);
+    (void)(currCmdBuf);
 
     // There is no need to put any memory barriers to make sure host writes have finished here.
     // When a command buffer is submitted to a queue, there is an implicit memory barrier that
@@ -548,20 +549,22 @@ void GrVkOpsRenderPass::onBindBuffers(const GrBuffer* indexBuffer, const GrBuffe
     // Here our vertex and instance inputs need to match the same 0-based bindings they were
     // assigned in GrVkPipeline. That is, vertex first (if any) followed by instance.
     uint32_t binding = 0;
+    (void)(binding);
+
     if (auto* vkVertexBuffer = static_cast<const GrVkMeshBuffer*>(vertexBuffer)) {
         SkASSERT(!vkVertexBuffer->isCpuBuffer());
         SkASSERT(!vkVertexBuffer->isMapped());
-        currCmdBuf->bindInputBuffer(fGpu, binding++, vkVertexBuffer);
+        // currCmdBuf->bindInputBuffer(fGpu, binding++, vkVertexBuffer);
     }
     if (auto* vkInstanceBuffer = static_cast<const GrVkMeshBuffer*>(instanceBuffer)) {
         SkASSERT(!vkInstanceBuffer->isCpuBuffer());
         SkASSERT(!vkInstanceBuffer->isMapped());
-        currCmdBuf->bindInputBuffer(fGpu, binding++, vkInstanceBuffer);
+        // currCmdBuf->bindInputBuffer(fGpu, binding++, vkInstanceBuffer);
     }
     if (auto* vkIndexBuffer = static_cast<const GrVkMeshBuffer*>(indexBuffer)) {
         SkASSERT(!vkIndexBuffer->isCpuBuffer());
         SkASSERT(!vkIndexBuffer->isMapped());
-        currCmdBuf->bindIndexBuffer(fGpu, vkIndexBuffer);
+        // currCmdBuf->bindIndexBuffer(fGpu, vkIndexBuffer);
     }
 }
 

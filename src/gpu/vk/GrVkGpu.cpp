@@ -576,12 +576,12 @@ bool GrVkGpu::onTransferPixelsTo(GrTexture* texture, int left, int top, int widt
                           false);
 
     // Copy the buffer to the image
-    this->currentCommandBuffer()->copyBufferToImage(this,
-                                                    vkBuffer,
-                                                    vkTex,
-                                                    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                                                    1,
-                                                    &region);
+    // this->currentCommandBuffer()->copyBufferToImage(this,
+    //                                                 vkBuffer,
+    //                                                 vkTex,
+    //                                                 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+    //                                                 1,
+    //                                                 &region);
 
     vkTex->texturePriv().markMipMapsDirty();
     return true;
@@ -965,12 +965,12 @@ bool GrVkGpu::uploadTexDataOptimal(GrVkTexture* tex, int left, int top, int widt
                                   false);
 
     // Copy the buffer to the image
-    this->currentCommandBuffer()->copyBufferToImage(this,
-                                                    transferBuffer.get(),
-                                                    uploadTexture,
-                                                    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                                                    regions.count(),
-                                                    regions.begin());
+    // this->currentCommandBuffer()->copyBufferToImage(this,
+    //                                                 transferBuffer.get(),
+    //                                                 uploadTexture,
+    //                                                 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+    //                                                 regions.count(),
+    //                                                 regions.begin());
 
     // If we copied the data into a temporary image first, copy that image into our main texture
     // now.

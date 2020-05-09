@@ -198,15 +198,15 @@ void GrVkMemory::FlushMappedAlloc(const GrVkGpu* gpu, const GrVkAlloc& alloc, Vk
         SkASSERT(offset == 0);
         SkASSERT(size <= alloc.fSize);
         if (alloc.fBackendMemory) {
-            GrVkMemoryAllocator* allocator = gpu->memoryAllocator();
-            allocator->flushMappedMemory(alloc.fBackendMemory, offset, size);
+            // GrVkMemoryAllocator* allocator = gpu->memoryAllocator();
+            // allocator->flushMappedMemory(alloc.fBackendMemory, offset, size);
         } else {
             VkDeviceSize alignment = gpu->physicalDeviceProperties().limits.nonCoherentAtomSize;
             VkMappedMemoryRange mappedMemoryRange;
             GrVkMemory::GetNonCoherentMappedMemoryRange(alloc, offset, size, alignment,
                                                         &mappedMemoryRange);
-            GR_VK_CALL(gpu->vkInterface(), FlushMappedMemoryRanges(gpu->device(), 1,
-                                                                   &mappedMemoryRange));
+            // GR_VK_CALL(gpu->vkInterface(), FlushMappedMemoryRanges(gpu->device(), 1,
+            //                                                        &mappedMemoryRange));
         }
     }
 }

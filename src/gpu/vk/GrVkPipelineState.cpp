@@ -99,9 +99,9 @@ bool GrVkPipelineState::setAndBindUniforms(GrVkGpu* gpu,
     // Get new descriptor set
     if (fUniformBuffer) {
         fDataManager.uploadUniformBuffers(gpu, fUniformBuffer.get());
-        static const int kUniformDSIdx = GrVkUniformHandler::kUniformBufferDescSet;
-        commandBuffer->bindDescriptorSets(gpu, this, fPipeline->layout(), kUniformDSIdx, 1,
-                                          fUniformBuffer->descriptorSet(), 0, nullptr);
+        // static const int kUniformDSIdx = GrVkUniformHandler::kUniformBufferDescSet;
+        // commandBuffer->bindDescriptorSets(gpu, this, fPipeline->layout(), kUniformDSIdx, 1,
+        //                                   fUniformBuffer->descriptorSet(), 0, nullptr);
         commandBuffer->addRecycledResource(fUniformBuffer->resource());
     }
     return true;
@@ -147,7 +147,7 @@ bool GrVkPipelineState::setAndBindTextures(GrVkGpu* gpu,
     // Get new descriptor set
     SkASSERT(fNumSamplers == currTextureBinding);
     if (fNumSamplers) {
-        static const int kSamplerDSIdx = GrVkUniformHandler::kSamplerDescSet;
+        // static const int kSamplerDSIdx = GrVkUniformHandler::kSamplerDescSet;
 
         if (fNumSamplers == 1) {
             auto texture = samplerBindings[0].fTexture;
@@ -157,8 +157,8 @@ bool GrVkPipelineState::setAndBindTextures(GrVkGpu* gpu,
                 commandBuffer->addResource(texture->textureView());
                 commandBuffer->addResource(texture->resource());
                 commandBuffer->addRecycledResource(descriptorSet);
-                commandBuffer->bindDescriptorSets(gpu, this, fPipeline->layout(), kSamplerDSIdx, 1,
-                                                  descriptorSet->descriptorSet(), 0, nullptr);
+                // commandBuffer->bindDescriptorSets(gpu, this, fPipeline->layout(), kSamplerDSIdx, 1,
+                //                                   descriptorSet->descriptorSet(), 0, nullptr);
                 return true;
             }
         }
@@ -219,8 +219,8 @@ bool GrVkPipelineState::setAndBindTextures(GrVkGpu* gpu,
             texture->addDescriptorSetToCache(descriptorSet, state);
         }
 
-        commandBuffer->bindDescriptorSets(gpu, this, fPipeline->layout(), kSamplerDSIdx, 1,
-                                          descriptorSet->descriptorSet(), 0, nullptr);
+        // commandBuffer->bindDescriptorSets(gpu, this, fPipeline->layout(), kSamplerDSIdx, 1,
+        //                                   descriptorSet->descriptorSet(), 0, nullptr);
         commandBuffer->addRecycledResource(descriptorSet);
         descriptorSet->recycle();
     }
@@ -273,5 +273,5 @@ void GrVkPipelineState::setRenderTargetState(const GrRenderTarget* rt, GrSurface
 }
 
 void GrVkPipelineState::bindPipeline(const GrVkGpu* gpu, GrVkCommandBuffer* commandBuffer) {
-    commandBuffer->bindPipeline(gpu, fPipeline);
+    // commandBuffer->bindPipeline(gpu, fPipeline);
 }

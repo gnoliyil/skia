@@ -639,7 +639,7 @@ void GrVkPipeline::SetDynamicScissorRectState(GrVkGpu* gpu,
 
     SkASSERT(scissor.offset.x >= 0);
     SkASSERT(scissor.offset.y >= 0);
-    cmdBuffer->setScissor(gpu, 0, 1, &scissor);
+    // cmdBuffer->setScissor(gpu, 0, 1, &scissor);
 }
 
 void GrVkPipeline::SetDynamicViewportState(GrVkGpu* gpu,
@@ -653,7 +653,7 @@ void GrVkPipeline::SetDynamicViewportState(GrVkGpu* gpu,
     viewport.height = SkIntToScalar(renderTarget->height());
     viewport.minDepth = 0.0f;
     viewport.maxDepth = 1.0f;
-    cmdBuffer->setViewport(gpu, 0, 1, &viewport);
+    // cmdBuffer->setViewport(gpu, 0, 1, &viewport);
 }
 
 void GrVkPipeline::SetDynamicBlendConstantState(GrVkGpu* gpu,
@@ -674,5 +674,5 @@ void GrVkPipeline::SetDynamicBlendConstantState(GrVkGpu* gpu,
     } else {
         memset(floatColors, 0, 4 * sizeof(float));
     }
-    cmdBuffer->setBlendConstants(gpu, floatColors);
+    // cmdBuffer->setBlendConstants(gpu, floatColors);
 }
